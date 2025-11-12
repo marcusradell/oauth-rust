@@ -9,3 +9,6 @@ jsonwebtoken = { version = "10.2.0", features = ["rust_crypto"] }
 serde = { version = "1.0.228", features = ["derive"] }
 tokio = { version = "1.48.0", features = ["full"] }
 uuid = { version = "1.18.1", features = ["v4"] }
+
+[dev-dependencies]
+tower = "0.5.2"
