@@ -1,3 +1,6 @@
 model: anthropic/claude-sonnet-4-5-20250929
 auto-commits: false
-
+test-cmd: "cargo clippy && cargo test"
+lint-cmd: "rustfmt"
+auto-lint: true
+dark-mode: true
