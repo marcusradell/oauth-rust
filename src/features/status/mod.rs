@@ -1,6 +1,10 @@
+use std::sync::Arc;
+
 use axum::{Router, http::StatusCode, routing::get};
 
-pub fn router() -> Router {
+use crate::AppState;
+
+pub fn router() -> Router<Arc<AppState>> {
     Router::new().route("/", get(status_handler))
 }
 
