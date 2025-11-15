@@ -8,12 +8,18 @@ async fn sign_in() -> impl IntoResponse {
     Html(
         r#"
         <H1>Sign In</H1>
-        <form action="/authorization/authorize">
-        <label for="email">Email</label>
-        <input id="email">
-        <label for="password">Password</label>
-        <input type="password">
-        <button type="submit">Send</button>
+        <form action="/authorization/authorize" method="post">
+            <div>
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+        
+            <div>
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+        
+            <button type="submit">Sign In</button>
         </form>
         "#,
     )
@@ -30,6 +36,6 @@ async fn token() -> impl IntoResponse {
 pub fn router() -> Router {
     Router::new()
         .route("/sign_in", get(sign_in))
-        .route("/authorize", get(authorize))
+        .route("/authorize", post(authorize))
         .route("/token", post(token))
 }
