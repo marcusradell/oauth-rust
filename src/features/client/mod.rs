@@ -19,7 +19,12 @@ async fn authorization_callback() -> impl IntoResponse {
 }
 
 async fn landing_page() -> impl IntoResponse {
-    Html("<H1>Welcome</H1>")
+    Html(
+        r#"
+        <H1>Sign In</H1>
+        <a href="http://localhost:3000/authorization/sign_in">Sign in with Rådell</a>
+        "#,
+    )
 }
 pub fn router() -> Router {
     Router::new()
