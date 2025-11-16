@@ -1,3 +1,4 @@
+use axum::body::to_bytes;
 use axum::{
     body::Body,
     http::{Request, StatusCode, header},
@@ -48,4 +49,26 @@ async fn test_authorize() {
         response.headers().get("location").unwrap(),
         "http://localhost:3000/client/authorization_callback?code=123"
     )
+}
+
+#[tokio::test]
+async fn test_token() {
+    let router = super::router();
+    let response = router
+        .oneshot(
+            Request::builder()
+                .uri("/token")
+                .method("POST")
+                .body(Body::empty())
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+
+    assert_eq!(response.status(), StatusCode::OK);
+
+    let body_bytes = to_bytes(response.into_body(), usize::MAX).await.unwrap();
+    let body = std::str::from_utf8(&body_bytes).unwrap();
+
+    assert_eq!(body, "[[TODO: token string]]");
 }
