@@ -35,7 +35,7 @@ pub async fn handler(
     Json(data): Json<AuthorizationData>,
 ) -> Result<Json<ResponseData>, axum::http::StatusCode> {
     let authorization_code: AuthorizationCode = sqlx::query_as(
-        "SELECT code, user_id, expires_at, created_at FROM authorization_codes WHERE code=$1 ORDER BY created_at DESC",
+        "SELECT user_id, expires_at FROM authorization_codes WHERE code=$1 ORDER BY created_at DESC",
     )
     .bind(&data.code)
     .fetch_one(&db)
