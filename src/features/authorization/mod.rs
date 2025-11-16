@@ -1,30 +1,11 @@
+mod sign_in;
+
 use axum::{
     Form, Router,
-    response::{Html, IntoResponse, Redirect},
+    response::{IntoResponse, Redirect},
     routing::{get, post},
 };
 use serde::Deserialize;
-
-async fn sign_in() -> impl IntoResponse {
-    Html(
-        r#"
-        <H1>Sign In</H1>
-        <form action="/authorization/authorize" method="post">
-            <div>
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email" required>
-            </div>
-        
-            <div>
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" required>
-            </div>
-        
-            <button type="submit">Sign In</button>
-        </form>
-        "#,
-    )
-}
 
 #[derive(Deserialize)]
 struct AuthorizeFormData {
@@ -51,7 +32,7 @@ async fn token() -> impl IntoResponse {
 
 pub fn router() -> Router {
     Router::new()
-        .route("/sign_in", get(sign_in))
+        .route("/sign_in", get(sign_in::sign_in))
         .route("/authorize", post(authorize))
         .route("/token", post(token))
 }
