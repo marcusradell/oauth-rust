@@ -18,13 +18,11 @@ async fn authorization_callback(cookies: Cookies) -> impl IntoResponse {
 
     let client = reqwest::Client::new();
 
-    let response = client
+    let _response = client
         .post("http://localhost:3000/authorization/token")
         .send()
         .await
         .unwrap();
-
-    println!("{response:?}");
 
     Redirect::to("/client")
 }
