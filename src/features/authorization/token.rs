@@ -1,5 +1,5 @@
 use axum::response::IntoResponse;
 
-pub async fn token() -> impl IntoResponse {
+pub async fn handler() -> impl IntoResponse {
     "[[TODO: token string]]"
 }
