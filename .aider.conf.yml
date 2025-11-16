@@ -4,3 +4,4 @@ test-cmd: "cargo clippy && cargo test"
 lint-cmd: "rustfmt"
 auto-lint: true
 dark-mode: true
+read: prompts/context.md
