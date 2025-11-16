@@ -1,7 +1,15 @@
 mod features;
 
-use axum::Router;
+use axum::{
+    Router,
+    response::{IntoResponse, Redirect},
+    routing::get,
+};
 use sqlx::{migrate, postgres::PgPoolOptions};
+
+async fn root_route() -> impl IntoResponse {
+    Redirect::to("/client")
+}
 
 #[tokio::main]
 async fn main() {
@@ -16,7 +24,8 @@ async fn main() {
     let app = Router::new()
         .nest("/status", features::status::router())
         .nest("/authorization", features::authorization::router())
-        .nest("/client", features::client::router());
+        .nest("/client", features::client::router())
+        .merge(Router::new().route("/", get(root_route)));
 
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
     axum::serve(listener, app).await.unwrap();
