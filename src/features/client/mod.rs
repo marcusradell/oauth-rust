@@ -15,8 +15,9 @@ struct QueryData {
 }
 
 #[derive(Deserialize)]
-struct TokenBody {
+struct TokenData {
     access_token: String,
+    refresh_token: String,
 }
 
 async fn authorization_callback(
@@ -32,28 +33,34 @@ async fn authorization_callback(
         .await
         .unwrap();
 
-    let access_token: TokenBody = response.json().await.unwrap();
+    let token_data: TokenData = response.json().await.unwrap();
 
-    let pretend_session_token = access_token;
-
-    let cookie: Cookie = Cookie::build(("session", pretend_session_token.access_token))
+    let access_cookie: Cookie = Cookie::build(("access_token", token_data.access_token))
         .path("/")
         .secure(true)
         .http_only(true)
         .into();
 
-    cookies.add(cookie);
+    cookies.add(access_cookie);
+
+    let refresh_cookie: Cookie = Cookie::build(("refresh_token", token_data.refresh_token))
+        .path("/")
+        .secure(true)
+        .http_only(true)
+        .into();
+
+    cookies.add(refresh_cookie);
 
     Redirect::to("/client")
 }
 
 async fn landing_page(cookies: Cookies) -> impl IntoResponse {
-    let session = cookies
-        .get("session")
+    let access_token = cookies
+        .get("access_token")
         .and_then(|c| c.value().parse().ok())
         .unwrap_or("".to_string());
 
-    if session.is_empty() {
+    if access_token.is_empty() {
         Html(
             r#"
         <H1>Sign In</H1>
