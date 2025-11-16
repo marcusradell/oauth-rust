@@ -1,13 +1,26 @@
+use axum::Router;
 use axum::body::to_bytes;
 use axum::{
     body::Body,
     http::{Request, StatusCode, header},
 };
+use sqlx::migrate;
+use sqlx::postgres::PgPoolOptions;
 use tower::ServiceExt;
+
+async fn setup() -> Router {
+    dotenvy::from_filename("test.env").unwrap();
+    let db_url = std::env::var("DATABASE_URL").unwrap();
+
+    let db = PgPoolOptions::new().connect(&db_url).await.unwrap();
+
+    migrate!("./migrations").run(&db).await.unwrap();
+    super::router(db)
+}
 
 #[tokio::test]
 async fn test_sign_in_route() {
-    let router = super::router();
+    let router = setup().await;
 
     let response = router
         .oneshot(
@@ -28,12 +41,11 @@ async fn test_sign_in_route() {
 
 #[tokio::test]
 async fn test_authorize() {
-    dotenvy::from_filename("test.env").unwrap();
-    let router = super::router();
+    let router = setup().await;
 
     let form_data = form_urlencoded::Serializer::new(String::new())
-        .append_pair("email", &std::env::var("SIGN_IN_EMAIL").unwrap())
-        .append_pair("password", &std::env::var("SIGN_IN_PASSWORD").unwrap())
+        .append_pair("email", "me@example.com")
+        .append_pair("password", "please")
         .finish();
 
     let response = router
@@ -57,7 +69,7 @@ async fn test_authorize() {
 
 #[tokio::test]
 async fn test_token() {
-    let router = super::router();
+    let router = setup().await;
     let response = router
         .oneshot(
             Request::builder()
