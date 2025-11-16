@@ -15,7 +15,7 @@ struct QueryData {
 }
 
 #[derive(Deserialize)]
-struct AccessToken {
+struct TokenBody {
     access_token: String,
 }
 
@@ -32,9 +32,11 @@ async fn authorization_callback(
         .await
         .unwrap();
 
-    let access_token: AccessToken = response.json().await.unwrap();
+    let access_token: TokenBody = response.json().await.unwrap();
 
-    let cookie: Cookie = Cookie::build(("session", access_token.access_token))
+    let pretend_session_token = access_token;
+
+    let cookie: Cookie = Cookie::build(("session", pretend_session_token.access_token))
         .path("/")
         .secure(true)
         .http_only(true)
