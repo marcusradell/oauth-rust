@@ -38,7 +38,7 @@ async fn authorization_callback(
         .await
         .map_err(|_| axum::http::StatusCode::INTERNAL_SERVER_ERROR)?;
 
-    let access_cookie: Cookie = Cookie::build(("access_token", token_data.access_token))
+    let access_cookie: Cookie = Cookie::build(("client_access_token", token_data.access_token))
         .path("/")
         .secure(true)
         .http_only(true)
@@ -46,7 +46,7 @@ async fn authorization_callback(
 
     cookies.add(access_cookie);
 
-    let refresh_cookie: Cookie = Cookie::build(("refresh_token", token_data.refresh_token))
+    let refresh_cookie: Cookie = Cookie::build(("client_refresh_token", token_data.refresh_token))
         .path("/")
         .secure(true)
         .http_only(true)
@@ -59,7 +59,7 @@ async fn authorization_callback(
 
 async fn landing_page(cookies: Cookies) -> impl IntoResponse {
     let access_token = cookies
-        .get("access_token")
+        .get("client_access_token")
         .and_then(|c| c.value().parse().ok())
         .unwrap_or("".to_string());
 
@@ -85,11 +85,11 @@ async fn landing_page(cookies: Cookies) -> impl IntoResponse {
 }
 
 async fn log_out(cookies: Cookies) -> impl IntoResponse {
-    let mut cookie = Cookie::from("access_token");
+    let mut cookie = Cookie::from("client_access_token");
     cookie.set_path("/");
     cookies.remove(cookie);
 
-    let mut cookie = Cookie::from("refresh_token");
+    let mut cookie = Cookie::from("client_refresh_token");
     cookie.set_path("/");
     cookies.remove(cookie);
 
