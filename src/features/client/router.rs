@@ -10,7 +10,7 @@ pub fn router() -> Router {
             "/authorization_callback",
             get(super::authorization_callback::handler),
         )
-        .route("/", get(super::landing_page))
+        .route("/", get(super::landing_page::handler))
         .route("/log_out", post(super::log_out))
         .layer(CookieManagerLayer::new())
 }
