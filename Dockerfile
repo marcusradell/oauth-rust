@@ -12,6 +12,7 @@ COPY Cargo.toml Cargo.lock ./
 # Copy source code
 COPY src ./src
 COPY migrations ./migrations
+COPY static ./static
 COPY build.rs ./build.rs
 
 # Build the application in release mode
@@ -34,6 +35,9 @@ COPY --from=builder /app/target/release/lab-rust-iam /app/lab-rust-iam
 
 # Copy migrations
 COPY --from=builder /app/migrations /app/migrations
+
+# Copy static files
+COPY --from=builder /app/static /app/static
 
 # Change ownership to non-root user
 RUN chown -R appuser:appuser /app

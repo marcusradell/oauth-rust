@@ -2,6 +2,7 @@ mod features;
 
 use axum::{
     Router,
+    http::{StatusCode, header},
     response::{IntoResponse, Redirect},
     routing::get,
 };
@@ -9,6 +10,17 @@ use sqlx::{migrate, postgres::PgPoolOptions};
 
 async fn root_route() -> impl IntoResponse {
     Redirect::to("/client")
+}
+
+async fn favicon() -> impl IntoResponse {
+    let svg = include_str!("../static/favicon.svg");
+
+    (
+        StatusCode::OK,
+        [(header::CONTENT_TYPE, "image/svg+xml")],
+        svg,
+    )
+        .into_response()
 }
 
 #[tokio::main]
@@ -38,7 +50,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             features::authorization::router(db.clone(), api_base_url.clone()),
         )
         .nest("/client", features::client::router(api_base_url))
-        .merge(Router::new().route("/", get(root_route)));
+        .merge(
+            Router::new()
+                .route("/", get(root_route))
+                .route("/favicon.ico", get(favicon)),
+        );
 
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000")
         .await
