@@ -3,6 +3,7 @@ use axum::{
     routing::{get, post},
 };
 use sqlx::PgPool;
+use tower_cookies::CookieManagerLayer;
 
 pub fn router(db: PgPool) -> Router {
     Router::new()
@@ -11,4 +12,5 @@ pub fn router(db: PgPool) -> Router {
         .route("/sign_in", post(super::sign_in::handler))
         .route("/token", post(super::token::handler))
         .with_state(db)
+        .layer(CookieManagerLayer::new())
 }
