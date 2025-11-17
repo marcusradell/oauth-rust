@@ -77,7 +77,7 @@ async fn landing_page(cookies: Cookies) -> impl IntoResponse {
                 <p>You are signed in!</p>
 
                 <form action="/client/log_out" method="post">
-                    <button type="submit">Log out</button>
+                    <button type="submit">Log out from client</button>
                 </form>
             "#,
         )
