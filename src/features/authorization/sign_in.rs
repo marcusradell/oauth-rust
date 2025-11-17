@@ -74,7 +74,9 @@ pub async fn handler(
         user_id
     };
 
-    cookies.add(Cookie::new("authorization_session_id", user_id.to_string()));
+    let mut cookie = Cookie::new("authorization_session_id", user_id.to_string());
+    cookie.set_path("/authorization");
+    cookies.add(cookie);
 
     Ok(Redirect::to("/authorization/authorize"))
 }
