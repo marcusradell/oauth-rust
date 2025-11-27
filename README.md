@@ -19,3 +19,7 @@ _You can skip the `ANTHROPIC_API_KEY` if you aren't using Aider._
 `bacon` or `cargo run` to run the application.
 
 Go to `http://localhost:3000` to follow along the authorization flow.
+
+### Dev DB
+
+`(source .env && psql "$DATABASE_URL")` to connect to the database.
